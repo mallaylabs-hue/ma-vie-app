@@ -1,0 +1,102 @@
+@import "tailwindcss";
+
+:root {
+  --bg: #f4f5f8;
+  --surface: #ffffff;
+  --surface-2: #fbfbfd;
+  --ink: #16161d;
+  --ink-soft: #5b5c6b;
+  --ink-faint: #9a9ba8;
+  --line: #e8e9ef;
+  --accent: #0e7c66;
+
+  /* Accents par domaine */
+  --d-business: #bf8a12;
+  --d-mindset: #3b5bdb;
+  --d-alimentation: #2f9e44;
+  --d-sport: #e8590c;
+  --d-relations: #c2255c;
+}
+
+@theme inline {
+  --color-bg: var(--bg);
+  --color-surface: var(--surface);
+  --color-surface-2: var(--surface-2);
+  --color-ink: var(--ink);
+  --color-ink-soft: var(--ink-soft);
+  --color-ink-faint: var(--ink-faint);
+  --color-line: var(--line);
+  --color-accent: var(--accent);
+  --font-sans: var(--font-geist-sans);
+}
+
+* {
+  -webkit-tap-highlight-color: transparent;
+}
+
+html,
+body {
+  height: 100%;
+}
+
+body {
+  background: var(--bg);
+  color: var(--ink);
+  font-family: var(--font-sans), system-ui, -apple-system, sans-serif;
+  overscroll-behavior-y: none;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* Conteneur mobile-first */
+.shell {
+  width: 100%;
+  max-width: 30rem;
+  margin-inline: auto;
+  padding-inline: 1.25rem;
+  padding-bottom: calc(env(safe-area-inset-bottom) + 2.5rem);
+}
+
+/* Curseur (range) premium, couleur pilotée par --thumb */
+input[type="range"] {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 100%;
+  height: 6px;
+  border-radius: 999px;
+  background: var(--line);
+  outline: none;
+}
+input[type="range"]::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 26px;
+  height: 26px;
+  border-radius: 999px;
+  background: var(--surface);
+  border: 2px solid var(--thumb, var(--accent));
+  box-shadow: 0 1px 5px rgba(0, 0, 0, 0.18);
+  cursor: pointer;
+}
+input[type="range"]::-moz-range-thumb {
+  width: 26px;
+  height: 26px;
+  border-radius: 999px;
+  background: var(--surface);
+  border: 2px solid var(--thumb, var(--accent));
+  box-shadow: 0 1px 5px rgba(0, 0, 0, 0.18);
+  cursor: pointer;
+}
+
+@keyframes rise {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+.rise {
+  animation: rise 0.55s cubic-bezier(0.2, 0.7, 0.2, 1) both;
+}

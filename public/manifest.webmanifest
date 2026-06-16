@@ -1,0 +1,22 @@
+{
+  "name": "Ma Vie — fiche perso",
+  "short_name": "Ma Vie",
+  "description": "Ta fiche perso de vie, façon RPG : identité cible et score d'alignement, domaine par domaine.",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#f4f5f8",
+  "theme_color": "#f4f5f8",
+  "lang": "fr",
+  "icons": [
+    { "src": "/icon-192.png", "sizes": "192x192", "type": "image/png" },
+    { "src": "/icon-512.png", "sizes": "512x512", "type": "image/png" },
+    {
+      "src": "/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
+    }
+  ]
+}
