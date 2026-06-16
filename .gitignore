@@ -39,3 +39,6 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# Config locale Claude Code (peut contenir des secrets) — jamais versionner
+.claude/

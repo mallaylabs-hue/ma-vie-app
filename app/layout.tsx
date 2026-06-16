@@ -22,6 +22,8 @@ export const metadata: Metadata = {
     icon: "/icon.svg",
     apple: "/apple-touch-icon.png",
   },
+  // Contenu psychologique intime : on ne veut surtout pas être indexé.
+  robots: { index: false, follow: false },
 };
 
 export const viewport: Viewport = {
