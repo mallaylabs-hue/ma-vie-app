@@ -5,6 +5,7 @@ export interface AxisDraft {
   identiteCible: string;
   etat: number;
   action: number;
+  frequence?: number; // Mindset uniquement
 }
 
 export const EMPTY_DRAFT: AxisDraft = {
@@ -31,10 +32,7 @@ function Slider({
     <div>
       <div className="flex items-baseline justify-between">
         <span className="text-sm font-medium text-ink">{label}</span>
-        <span
-          className="text-lg font-semibold tabular-nums"
-          style={{ color }}
-        >
+        <span className="text-lg font-semibold tabular-nums" style={{ color }}>
           {value}
           <span className="text-sm text-ink-faint">/10</span>
         </span>
@@ -58,11 +56,15 @@ export function AxisForm({
   onChange,
   prompts,
   color,
+  variant = "standard",
+  frequence,
 }: {
   value: AxisDraft;
   onChange: (v: AxisDraft) => void;
   prompts: { actuelle: string; cible: string; cibleGuard?: string };
   color: string;
+  variant?: "standard" | "frequence";
+  frequence?: { label: string; hint: string; leviers: string[] };
 }) {
   const set = (patch: Partial<AxisDraft>) => onChange({ ...value, ...patch });
 
@@ -103,22 +105,49 @@ export function AxisForm({
         />
       </div>
 
-      <div className="space-y-4 rounded-2xl border border-line bg-surface-2 p-4">
-        <Slider
-          label="Mon état"
-          hint="À quel point ton état va déjà dans le sens de ta cible ?"
-          value={value.etat}
-          color={color}
-          onChange={(etat) => set({ etat })}
-        />
-        <Slider
-          label="Mes actions"
-          hint="À quel point tes actions concrètes y vont, là, maintenant ?"
-          value={value.action}
-          color={color}
-          onChange={(action) => set({ action })}
-        />
-      </div>
+      {variant === "frequence" && frequence ? (
+        <div className="space-y-4 rounded-2xl border border-line bg-surface-2 p-4">
+          <Slider
+            label={frequence.label}
+            hint={frequence.hint}
+            value={value.frequence ?? 5}
+            color={color}
+            onChange={(f) => set({ frequence: f })}
+          />
+          <div className="border-t border-line pt-3">
+            <p className="text-[11px] font-medium uppercase tracking-wide text-ink-faint">
+              Ce qui recalibre ta fréquence
+            </p>
+            <div className="mt-2 flex flex-wrap gap-1.5">
+              {frequence.leviers.map((l) => (
+                <span
+                  key={l}
+                  className="rounded-full border border-line px-2.5 py-1 text-[11px] text-ink-soft"
+                >
+                  {l}
+                </span>
+              ))}
+            </div>
+          </div>
+        </div>
+      ) : (
+        <div className="space-y-4 rounded-2xl border border-line bg-surface-2 p-4">
+          <Slider
+            label="Mon état"
+            hint="À quel point ton état va déjà dans le sens de ta cible ?"
+            value={value.etat}
+            color={color}
+            onChange={(etat) => set({ etat })}
+          />
+          <Slider
+            label="Mes actions"
+            hint="À quel point tes actions concrètes y vont, là, maintenant ?"
+            value={value.action}
+            color={color}
+            onChange={(action) => set({ action })}
+          />
+        </div>
+      )}
     </div>
   );
 }

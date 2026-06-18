@@ -19,11 +19,25 @@ export type DomainId =
  * Pour la plupart des domaines il y a un seul axe (= le domaine lui-même).
  * Les Relations en ont 4 (réseau, amour, famille, mentor).
  */
+/** Un signe / synchronicité / baraka logué — preuve que la fréquence était haute. */
+export interface Preuve {
+  id: string;
+  date: number;
+  note: string;
+}
+
 export interface AxisCapture {
   identiteActuelle: string;
   identiteCible: string;
   etat: number; // curseur 0–10 : mon état va-t-il dans le sens de ma cible ?
   action: number; // curseur 0–10 : mes actions vont-elles dans ce sens ?
+  /**
+   * Spécifique au Mindset : la jauge-titre = la FRÉQUENCE (haute fréquence /
+   * vibration / détachement / connexion). C'est la cause racine ; connexion et
+   * baraka en découlent. Quand défini, il pilote le score du Mindset à la place
+   * de (etat, action).
+   */
+  frequence?: number; // curseur 0–10
   completed: boolean;
   updatedAt: number;
 
@@ -32,7 +46,8 @@ export interface AxisCapture {
   etapes: unknown[];
   actions: unknown[];
   historiqueBilans: unknown[];
-  coffreAPreuves: unknown[];
+  /** Journal de signes / baraka. Utilisé dès la Phase 0.1 pour le Mindset. */
+  coffreAPreuves: Preuve[];
 }
 
 export interface Profile {

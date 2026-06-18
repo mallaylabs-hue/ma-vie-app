@@ -13,9 +13,14 @@ import { DOMAINS, DOMAIN_MAP, axisIdsForDomain } from "./domains";
 /** Seuil en-dessous duquel le Mindset déclenche l'alerte socle. */
 export const MINDSET_FLOOR = 45;
 
-/** Score d'un axe : moyenne des 2 curseurs, ramenée sur 100. */
+/**
+ * Score d'un axe sur 100.
+ * - Mindset : piloté par la FRÉQUENCE (cause racine) quand elle est définie.
+ * - Autres : moyenne des 2 curseurs (état, action).
+ */
 export function axisScore(c: AxisCapture | undefined): number | null {
   if (!c || !c.completed) return null;
+  if (c.frequence != null) return Math.round(c.frequence * 10);
   return Math.round(((c.etat + c.action) / 2) * 10);
 }
 

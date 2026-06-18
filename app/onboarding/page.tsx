@@ -4,6 +4,7 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { AxisForm, EMPTY_DRAFT, type AxisDraft } from "@/components/AxisForm";
 import { Gauge } from "@/components/Gauge";
+import { IntroAnimation } from "@/components/IntroAnimation";
 import { DOMAIN_MAP, TONES } from "@/lib/domains";
 import type { Profile, Tone } from "@/lib/types";
 import { createProfile, useProfile, withCapture } from "@/lib/profile";
@@ -36,10 +37,14 @@ export default function Onboarding() {
   const router = useRouter();
   const { save } = useProfile();
 
+  const [showIntro, setShowIntro] = useState(true);
   const [step, setStep] = useState<Step>("tone");
   const [tone, setTone] = useState<Tone | null>(null);
   const [business, setBusiness] = useState<AxisDraft>({ ...EMPTY_DRAFT });
-  const [mindset, setMindset] = useState<AxisDraft>({ ...EMPTY_DRAFT });
+  const [mindset, setMindset] = useState<AxisDraft>({
+    ...EMPTY_DRAFT,
+    frequence: 5,
+  });
   const [built, setBuilt] = useState<Profile | null>(null);
 
   const stepIndex = { tone: 0, business: 1, mindset: 2, reveal: 3 }[step];
@@ -57,6 +62,8 @@ export default function Onboarding() {
 
   return (
     <main className="min-h-dvh">
+      {showIntro && <IntroAnimation onDone={() => setShowIntro(false)} />}
+
       <div className="shell pt-8">
         {step !== "reveal" && (
           <div className="mb-7 flex items-center justify-between">
@@ -133,9 +140,7 @@ export default function Onboarding() {
             domainId={step}
             draft={step === "business" ? business : mindset}
             onDraft={step === "business" ? setBusiness : setMindset}
-            onBack={() =>
-              setStep(step === "business" ? "tone" : "business")
-            }
+            onBack={() => setStep(step === "business" ? "tone" : "business")}
             onNext={(d) => {
               if (step === "business") {
                 setBusiness(d);
@@ -188,7 +193,7 @@ function CaptureStep({
       <h1 className="text-3xl font-bold tracking-tight">{dom.label}</h1>
       <p className="mb-6 mt-2 text-[15px] text-ink-soft">
         {domainId === "mindset"
-          ? "Le socle. S'il ne suit pas, le reste est mal fait."
+          ? "Le socle. Ta fréquence porte tout le reste."
           : "On commence par là — c'est ta priorité."}
       </p>
 
@@ -197,6 +202,8 @@ function CaptureStep({
         onChange={onDraft}
         prompts={dom.prompts}
         color={dom.color}
+        variant={dom.frequence ? "frequence" : "standard"}
+        frequence={dom.frequence}
       />
 
       <div className="mt-7 flex gap-3">
@@ -218,13 +225,7 @@ function CaptureStep({
   );
 }
 
-function Reveal({
-  profile,
-  onDone,
-}: {
-  profile: Profile;
-  onDone: () => void;
-}) {
+function Reveal({ profile, onDone }: { profile: Profile; onDone: () => void }) {
   const constat = revealConstat(profile);
   const rows = (["business", "mindset"] as const).map((id) => ({
     dom: DOMAIN_MAP[id],

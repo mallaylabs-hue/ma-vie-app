@@ -19,6 +19,13 @@ export interface DomainDef {
     /** Garde-fou affiché sous le champ "identité cible" (définir en positif). */
     cibleGuard?: string;
   };
+  /** Si présent, ce domaine est noté via une jauge unique (la Fréquence du Mindset). */
+  frequence?: {
+    label: string;
+    hint: string;
+    /** Leviers qui recalibrent la fréquence (affichage informatif). */
+    leviers: string[];
+  };
   subDomains?: SubDomainDef[];
 }
 
@@ -65,6 +72,17 @@ export const DOMAINS: DomainDef[] = [
       cible: "L'homme que tu deviens : serein, détaché, déjà dans l'état ?",
       cibleGuard:
         "« Affamé et digne », jamais « minable ». La position, pas l'être.",
+    },
+    frequence: {
+      label: "Fréquence",
+      hint: "Ta haute fréquence : détachement, unité, connexion. Quand tu y es, la baraka opère — tu relies ce qui arrive au destin, et c'est juste.",
+      leviers: [
+        "5 prières",
+        "Respiration sur l'adhan",
+        "Sens des sourates",
+        "Visualisation",
+        "Relecture des objectifs",
+      ],
     },
   },
   {

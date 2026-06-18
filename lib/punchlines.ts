@@ -81,13 +81,11 @@ function pickSituation(p: Profile): Situation {
 
   if (m !== null && m < MINDSET_FLOOR) return "mindset_socle";
 
-  const express = [business, mindset].filter((c) => c?.completed);
-  const hasCible = express.some((c) => c!.identiteCible.trim().length > 0);
-  const avgAction =
-    express.length > 0
-      ? express.reduce((s, c) => s + c!.action, 0) / express.length
-      : 10;
-  if (hasCible && avgAction <= 4) return "gap_action";
+  const hasCible = [business, mindset].some(
+    (c) => c?.completed && c.identiteCible.trim().length > 0,
+  );
+  const businessAction = business?.completed ? business.action : 10;
+  if (hasCible && businessAction <= 4) return "gap_action";
 
   if (b !== null && m !== null && b >= 65 && m >= 65) return "momentum";
 

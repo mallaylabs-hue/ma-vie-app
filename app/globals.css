@@ -100,3 +100,56 @@ input[type="range"]::-moz-range-thumb {
 .rise {
   animation: rise 0.55s cubic-bezier(0.2, 0.7, 0.2, 1) both;
 }
+
+/* --- Animation d'entrée : "calibrage de fréquence" --- */
+.intro {
+  transition: opacity 0.45s ease;
+}
+.intro-out {
+  opacity: 0;
+  pointer-events: none;
+}
+.intro-ring {
+  position: absolute;
+  width: 130px;
+  height: 130px;
+  border-radius: 9999px;
+  border: 2px solid;
+  opacity: 0;
+  transform: scale(0.35);
+  animation: introPulse 1.9s ease-out infinite;
+}
+@keyframes introPulse {
+  0% {
+    opacity: 0.55;
+    transform: scale(0.35);
+  }
+  70% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 0;
+    transform: scale(1.75);
+  }
+}
+.intro-word {
+  animation: introWord 0.85s cubic-bezier(0.2, 0.7, 0.2, 1) both;
+  animation-delay: 0.15s;
+}
+@keyframes introWord {
+  from {
+    opacity: 0;
+    transform: translateY(7px) scale(0.96);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .intro-ring {
+    animation: none;
+    opacity: 0.25;
+    transform: scale(1);
+  }
+}

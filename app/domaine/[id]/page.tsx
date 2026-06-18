@@ -8,7 +8,7 @@ import { Gauge } from "@/components/Gauge";
 import { DOMAIN_MAP, axisIdsForDomain } from "@/lib/domains";
 import { useProfile, withCapture } from "@/lib/profile";
 import { domainScore, scoreLabel } from "@/lib/scoring";
-import type { DomainId } from "@/lib/types";
+import type { AxisCapture, DomainId, Preuve } from "@/lib/types";
 
 export default function DomainePage() {
   const params = useParams();
@@ -17,8 +17,11 @@ export default function DomainePage() {
   const router = useRouter();
   const { profile, loading, save } = useProfile();
 
+  const isFreq = !!dom?.frequence;
   const axisIds = useMemo(() => (dom ? axisIdsForDomain(dom) : []), [dom]);
   const [drafts, setDrafts] = useState<Record<string, AxisDraft> | null>(null);
+  const [signes, setSignes] = useState<Preuve[]>([]);
+  const [nouveauSigne, setNouveauSigne] = useState("");
   const [saving, setSaving] = useState(false);
 
   useEffect(() => {
@@ -36,12 +39,14 @@ export default function DomainePage() {
               identiteCible: c.identiteCible,
               etat: c.etat,
               action: c.action,
+              frequence: c.frequence ?? (isFreq ? 5 : undefined),
             }
-          : { ...EMPTY_DRAFT };
+          : { ...EMPTY_DRAFT, frequence: isFreq ? 5 : undefined };
       }
       setDrafts(init);
+      if (isFreq) setSignes(profile.captures[axisIds[0]]?.coffreAPreuves ?? []);
     }
-  }, [profile, dom, axisIds, drafts]);
+  }, [profile, dom, axisIds, drafts, isFreq]);
 
   if (!dom) {
     return (
@@ -80,6 +85,16 @@ export default function DomainePage() {
     };
   }
 
+  function addSigne() {
+    const note = nouveauSigne.trim();
+    if (!note) return;
+    setSignes((prev) => [
+      { id: crypto.randomUUID(), date: Date.now(), note },
+      ...prev,
+    ]);
+    setNouveauSigne("");
+  }
+
   async function handleSave() {
     if (!profile || !drafts) return;
     setSaving(true);
@@ -90,7 +105,9 @@ export default function DomainePage() {
       const completed =
         d.identiteActuelle.trim().length > 0 &&
         d.identiteCible.trim().length > 0;
-      p = withCapture(p, aid, { ...d, completed }, now);
+      const patch: Partial<AxisCapture> = { ...d, completed };
+      if (isFreq) patch.coffreAPreuves = signes;
+      p = withCapture(p, aid, patch, now);
     }
     await save(p);
     router.push("/dashboard");
@@ -119,13 +136,17 @@ export default function DomainePage() {
         <div className="mt-4 rounded-2xl border border-line bg-surface p-4">
           <div className="mb-2 flex items-baseline justify-between">
             <span className="text-sm font-medium text-ink-soft">
-              Score d&apos;alignement
+              {isFreq ? "Fréquence" : "Score d'alignement"}
             </span>
             <span
               className="text-sm font-semibold"
-              style={{ color: s.score === null ? "var(--ink-faint)" : dom.color }}
+              style={{
+                color: s.score === null ? "var(--ink-faint)" : dom.color,
+              }}
             >
-              {s.score === null ? "À compléter" : `${s.score} · ${scoreLabel(s.score)}`}
+              {s.score === null
+                ? "À compléter"
+                : `${s.score} · ${scoreLabel(s.score)}`}
             </span>
           </div>
           <Gauge value={s.score} color={dom.color} />
@@ -156,14 +177,76 @@ export default function DomainePage() {
                   }
                   prompts={promptsFor(aid)}
                   color={dom.color}
+                  variant={isFreq ? "frequence" : "standard"}
+                  frequence={dom.frequence}
                 />
               </section>
             );
           })}
         </div>
 
+        {/* Journal de signes (Mindset uniquement) */}
+        {isFreq && (
+          <section className="mt-9">
+            <h2 className="text-lg font-semibold">Journal de signes</h2>
+            <p className="mt-1 text-[13px] leading-snug text-ink-soft">
+              Les synchronicités, la baraka — ce qui confirme que ta fréquence
+              était haute. Note-les ici, ils nourrissent ton coffre à preuves.
+            </p>
+
+            <div className="mt-3 flex gap-2">
+              <input
+                value={nouveauSigne}
+                onChange={(e) => setNouveauSigne(e.target.value)}
+                onKeyDown={(e) => {
+                  if (e.key === "Enter") addSigne();
+                }}
+                placeholder="Un signe que tu as ressenti…"
+                className="flex-1 rounded-2xl border border-line bg-surface-2 px-3 py-3 text-[15px] outline-none placeholder:text-ink-faint focus:border-ink-soft"
+              />
+              <button
+                onClick={addSigne}
+                className="rounded-2xl px-4 py-3 font-semibold text-white"
+                style={{ background: dom.color }}
+              >
+                +
+              </button>
+            </div>
+
+            {signes.length > 0 && (
+              <ul className="mt-3 space-y-2">
+                {signes.map((sg) => (
+                  <li
+                    key={sg.id}
+                    className="flex items-start justify-between gap-3 rounded-2xl border border-line bg-surface p-3"
+                  >
+                    <div>
+                      <p className="text-[14px] leading-snug">{sg.note}</p>
+                      <p className="mt-0.5 text-[11px] text-ink-faint">
+                        {new Date(sg.date).toLocaleDateString("fr-FR", {
+                          day: "numeric",
+                          month: "short",
+                        })}
+                      </p>
+                    </div>
+                    <button
+                      onClick={() =>
+                        setSignes((prev) => prev.filter((x) => x.id !== sg.id))
+                      }
+                      aria-label="Supprimer"
+                      className="shrink-0 text-lg leading-none text-ink-faint"
+                    >
+                      ×
+                    </button>
+                  </li>
+                ))}
+              </ul>
+            )}
+          </section>
+        )}
+
         {/* Téléguidage Phase 2 */}
-        <div className="mt-8 rounded-2xl border border-dashed border-line p-4 text-center">
+        <div className="mt-9 rounded-2xl border border-dashed border-line p-4 text-center">
           <p className="text-sm font-medium text-ink-faint">
             Objectifs · Étapes · Actions
           </p>
