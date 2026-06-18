@@ -94,7 +94,7 @@ export function AxisForm({
           value={value.identiteActuelle}
           onChange={(e) => set({ identiteActuelle: e.target.value })}
           rows={2}
-          placeholder="Parle ou écris, franchement…"
+          placeholder="Parle ou écris — quelques phrases, franchement."
           className="w-full resize-none rounded-2xl border border-line bg-surface-2 p-3 text-[15px] leading-snug outline-none placeholder:text-ink-faint focus:border-ink-soft"
         />
       </div>
@@ -121,7 +121,7 @@ export function AxisForm({
           value={value.identiteCible}
           onChange={(e) => set({ identiteCible: e.target.value })}
           rows={3}
-          placeholder="Parle ou écris : visualise le toi que tu deviens…"
+          placeholder="Parle ou écris — quelques phrases : visualise-toi au présent."
           className="w-full resize-none rounded-2xl border border-line bg-surface-2 p-3 text-[15px] leading-snug outline-none placeholder:text-ink-faint focus:border-ink-soft"
         />
       </div>

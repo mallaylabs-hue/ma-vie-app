@@ -153,6 +153,11 @@ export default function DomainePage() {
           <Gauge value={s.score} color={dom.color} />
         </div>
 
+        <p className="mt-4 rounded-xl bg-surface-2 px-3 py-2 text-[12.5px] leading-snug text-ink-faint">
+          Quelques phrases honnêtes suffisent — pas un roman. Le score vient des
+          curseurs, et ton coach approfondira avec toi plus tard.
+        </p>
+
         {/* Capture(s) */}
         <div className="mt-7 space-y-9">
           {axisIds.map((aid) => {

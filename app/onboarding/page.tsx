@@ -191,10 +191,14 @@ function CaptureStep({
         <span className="text-xs text-ink-faint">{dom.tagline}</span>
       </div>
       <h1 className="text-3xl font-bold tracking-tight">{dom.label}</h1>
-      <p className="mb-6 mt-2 text-[15px] text-ink-soft">
+      <p className="mt-2 text-[15px] text-ink-soft">
         {domainId === "mindset"
           ? "Le socle. Ta fréquence porte tout le reste."
           : "On commence par là — c'est ta priorité."}
+      </p>
+      <p className="mb-6 mt-2 rounded-xl bg-surface-2 px-3 py-2 text-[12.5px] leading-snug text-ink-faint">
+        Quelques phrases honnêtes suffisent — pas un roman. Ton coach
+        approfondira plus tard.
       </p>
 
       <AxisForm
