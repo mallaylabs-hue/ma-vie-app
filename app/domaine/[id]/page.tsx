@@ -5,6 +5,7 @@ import { useParams, useRouter } from "next/navigation";
 import { useEffect, useMemo, useState } from "react";
 import { AxisForm, EMPTY_DRAFT, type AxisDraft } from "@/components/AxisForm";
 import { Gauge } from "@/components/Gauge";
+import { VoiceButton } from "@/components/VoiceButton";
 import { DOMAIN_MAP, axisIdsForDomain } from "@/lib/domains";
 import { useProfile, withCapture } from "@/lib/profile";
 import { domainScore, scoreLabel } from "@/lib/scoring";
@@ -203,6 +204,12 @@ export default function DomainePage() {
                 }}
                 placeholder="Un signe que tu as ressenti…"
                 className="flex-1 rounded-2xl border border-line bg-surface-2 px-3 py-3 text-[15px] outline-none placeholder:text-ink-faint focus:border-ink-soft"
+              />
+              <VoiceButton
+                color={dom.color}
+                onText={(t) =>
+                  setNouveauSigne((p) => (p.trim() ? p.trim() + " " : "") + t)
+                }
               />
               <button
                 onClick={addSigne}

@@ -1,5 +1,7 @@
 "use client";
 
+import { VoiceButton } from "./VoiceButton";
+
 export interface AxisDraft {
   identiteActuelle: string;
   identiteCible: string;
@@ -14,6 +16,9 @@ export const EMPTY_DRAFT: AxisDraft = {
   etat: 5,
   action: 5,
 };
+
+const append = (prev: string, t: string) =>
+  (prev.trim() ? prev.trim() + " " : "") + t;
 
 function Slider({
   label,
@@ -71,9 +76,17 @@ export function AxisForm({
   return (
     <div className="space-y-5">
       <div>
-        <label className="text-sm font-medium text-ink">
-          Identité actuelle
-        </label>
+        <div className="flex items-center justify-between gap-2">
+          <label className="text-sm font-medium text-ink">
+            Identité actuelle
+          </label>
+          <VoiceButton
+            color={color}
+            onText={(t) =>
+              set({ identiteActuelle: append(value.identiteActuelle, t) })
+            }
+          />
+        </div>
         <p className="mb-2 mt-0.5 text-xs leading-snug text-ink-faint">
           {prompts.actuelle}
         </p>
@@ -81,13 +94,21 @@ export function AxisForm({
           value={value.identiteActuelle}
           onChange={(e) => set({ identiteActuelle: e.target.value })}
           rows={2}
-          placeholder="Écris-le franchement…"
+          placeholder="Parle ou écris, franchement…"
           className="w-full resize-none rounded-2xl border border-line bg-surface-2 p-3 text-[15px] leading-snug outline-none placeholder:text-ink-faint focus:border-ink-soft"
         />
       </div>
 
       <div>
-        <label className="text-sm font-medium text-ink">Identité cible</label>
+        <div className="flex items-center justify-between gap-2">
+          <label className="text-sm font-medium text-ink">Identité cible</label>
+          <VoiceButton
+            color={color}
+            onText={(t) =>
+              set({ identiteCible: append(value.identiteCible, t) })
+            }
+          />
+        </div>
         <p className="mb-2 mt-0.5 text-xs leading-snug text-ink-faint">
           {prompts.cible}
           {prompts.cibleGuard ? (
@@ -100,7 +121,7 @@ export function AxisForm({
           value={value.identiteCible}
           onChange={(e) => set({ identiteCible: e.target.value })}
           rows={3}
-          placeholder="Visualise le toi que tu deviens…"
+          placeholder="Parle ou écris : visualise le toi que tu deviens…"
           className="w-full resize-none rounded-2xl border border-line bg-surface-2 p-3 text-[15px] leading-snug outline-none placeholder:text-ink-faint focus:border-ink-soft"
         />
       </div>
