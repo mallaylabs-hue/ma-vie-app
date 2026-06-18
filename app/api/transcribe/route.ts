@@ -10,7 +10,8 @@ const GROQ_URL = "https://api.groq.com/openai/v1/audio/transcriptions";
 const MODEL = "whisper-large-v3-turbo";
 
 export async function POST(req: Request) {
-  const key = process.env.GROQ_API_KEY;
+  // Tolère les deux casses (la variable Vercel peut être en minuscules).
+  const key = process.env.GROQ_API_KEY ?? process.env.groq_api_key;
   if (!key) {
     return Response.json(
       { error: "La transcription n'est pas encore configurée." },
